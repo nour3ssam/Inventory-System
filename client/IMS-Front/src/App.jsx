@@ -34,10 +34,12 @@ function App() {
   const showLayout = location.pathname !== '/login';
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  // Show cinematic intro on every load; dismissed by the animation itself
-  const [showIntro, setShowIntro] = useState(true);
+  // Show the cinematic intro only ONCE per browser-tab session.
+  // sessionStorage persists across in-page navigations but resets on a new tab.
+  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem('introSeen'));
 
   const handleIntroComplete = () => {
+    sessionStorage.setItem('introSeen', '1');
     setShowIntro(false);
     navigate('/login');
   };
@@ -47,9 +49,9 @@ function App() {
       <BackgroundCanvas />
 
       {/* First-visit box animation — renders above everything */}
-      {/* {showIntro && (
+      {showIntro && (
         <CinematicIntro onComplete={handleIntroComplete} />
-      )} */}
+      )}
       {showLayout && (
         <Sidebar
           isOpen={isMobileSidebarOpen}
@@ -73,7 +75,7 @@ function App() {
         <main className="page-body">
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path='/' element={<Home />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/suppliers" element={<Suppliers />} />

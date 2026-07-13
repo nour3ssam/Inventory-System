@@ -523,7 +523,7 @@ export default function Home()
             <Activity size={12} /> OPERATIONAL
           </div>
           <h1 className="db-title">
-            <span className="db-title-accent">NEXUS</span> COMMAND CENTER
+            <span className="db-title-accent">IMS</span> COMMAND CENTER
           </h1>
           <p className="db-subtitle">Inventory Intelligence System · Real-Time Analytics</p>
         </div>

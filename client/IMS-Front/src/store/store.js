@@ -6,6 +6,7 @@ import supplierReducer     from './supplierSlice';
 import userReducer         from './userSlice';
 import stockHistoryReducer from './stockHistorySlice';
 import notificationReducer from './notificationSlice';
+import transferReducer     from './transferSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     users:        userReducer,
     stockHistory: stockHistoryReducer,   // real API: IN / OUT / ADJUSTMENT history
     notifications: notificationReducer,
+    transfers:    transferReducer,
   },
 });

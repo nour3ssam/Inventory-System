@@ -20,7 +20,7 @@ const CategoryTable = ({ onEditClick }) => {
   // Compute metrics per category dynamically from products list
   const categoryMetrics = React.useMemo(() => {
     const metrics = {};
-    
+
     categories.forEach(cat => {
       metrics[cat.id] = { skus: 0, units: 0, value: 0 };
     });
@@ -44,16 +44,15 @@ const CategoryTable = ({ onEditClick }) => {
     return categories.filter((cat) => {
       const query = searchQuery.toLowerCase();
       return (
-        cat.name.toLowerCase().includes(query) ||
-        cat.code.toLowerCase().includes(query)
+        cat.name?.toLowerCase().includes(query) ||
+        cat.code?.toLowerCase().includes(query)
       );
     });
   }, [categories, searchQuery]);
 
-  // Sort categories based on selected column
   const sortedCategories = React.useMemo(() => {
     const sorted = [...filteredCategories];
-    
+
     sorted.sort((a, b) => {
       let fieldA, fieldB;
 
@@ -158,7 +157,7 @@ const CategoryTable = ({ onEditClick }) => {
               paginatedCategories.map((cat) => {
                 const metrics = categoryMetrics[cat.id] || { skus: 0, units: 0, value: 0 };
                 // const isInactive = cat.status?.toLowerCase() === 'inactive';
-                
+
                 return (
                   <tr key={cat.id}>
                     {/*
@@ -236,7 +235,7 @@ const CategoryTable = ({ onEditClick }) => {
           >
             <ChevronLeft size={16} />
           </button>
-          
+
           <span style={{ color: 'var(--text-pure-white)', fontWeight: '600', fontSize: '0.9rem' }}>
             Page {currentPage} of {totalPages}
           </span>

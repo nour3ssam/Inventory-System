@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/authSlice';
 import {
@@ -11,6 +11,7 @@ import {
   ShoppingCart,
   Warehouse,
   ArrowLeftRight,
+  Database,
   BarChart3,
   Users,
   Settings,
@@ -26,6 +27,7 @@ const navItems = [
   { name: 'Categories', path: '/categories', icon: FolderTree },
   { name: 'Suppliers', path: '/suppliers', icon: Truck },
   { name: 'Transfers', path: '/transfers', icon: ArrowLeftRight },
+  { name: 'Stock History', path: '/stock-history', icon: Database },
   { name: 'Analytics', path: '/analytics', icon: BarChart3 },
   // { name: 'Reports', path: '/reports', icon: BarChart3 },
   // { name: 'Users', path: '/users', icon: Users },
@@ -34,12 +36,14 @@ const navItems = [
 
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
     dispatch(logout());
     if (onClose) onClose();
+    navigate('/login');
   };
 
   return (

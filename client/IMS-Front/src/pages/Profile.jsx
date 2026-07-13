@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   User, Mail, Phone, MapPin, Shield, Calendar, Clock,
@@ -38,6 +39,7 @@ const ACTIVITY = [
 /* ─────────────────────────────────────────────────────────────────────────── */
 const Profile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
   // Fallback demo user if not logged in
@@ -300,6 +302,7 @@ const Profile = () => {
           onClick={async () => {
             await authService.logout();  // invalidates server-side token
             dispatch(logout());          // clears Redux + localStorage
+            navigate('/login');
           }}
         >
           Sign Out of IMS Core

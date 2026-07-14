@@ -1,17 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  user:            JSON.parse(localStorage.getItem('user')) || null,
-  token:           localStorage.getItem('token')            || null,
-  refreshToken:    localStorage.getItem('refreshToken')     || null,
-  isAuthenticated: !!localStorage.getItem('token'),
-  loading:         false,
-  error:           null,
+/** Build auth state from localStorage (called on bootstrap only). */
+const loadAuthFromStorage = () => {
+  try {
+    const token = localStorage.getItem('token');
+    const userRaw = localStorage.getItem('user');
+    return {
+      user:            userRaw ? JSON.parse(userRaw) : null,
+      token:           token || null,
+      refreshToken:    localStorage.getItem('refreshToken') || null,
+      isAuthenticated: !!token,
+      loading:         false,
+      error:           null,
+    };
+  } catch {
+    return {
+      user: null, token: null, refreshToken: null,
+      isAuthenticated: false, loading: false, error: null,
+    };
+  }
 };
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState,
+  initialState: loadAuthFromStorage(),
   reducers: {
     loginStart: (state) => {
       state.loading = true;
@@ -37,6 +49,8 @@ const authSlice = createSlice({
       state.token           = null;
       state.refreshToken    = null;
       state.isAuthenticated = false;
+      state.loading         = false;
+      state.error           = null;
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');

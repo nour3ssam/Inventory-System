@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   User, Mail, Phone, MapPin, Shield, Calendar, Clock,
   Edit3, Lock, Bell, Moon, Globe, Save, Eye, EyeOff,
   Package, ArrowLeftRight, CheckCircle, AlertTriangle,
 } from 'lucide-react';
-import { logout, updateUserData } from '../store/authSlice';
+import { updateUserData } from '../store/authSlice';
 import authService from '../services/authService';
+import { performLogout } from '../utils/session';
 import '../styles/pages/Profile.css';
 
 /* ── Helpers ──────────────────────────────────────────────────────────────── */
@@ -38,6 +40,7 @@ const ACTIVITY = [
 /* ─────────────────────────────────────────────────────────────────────────── */
 const Profile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
   // Fallback demo user if not logged in
@@ -61,6 +64,15 @@ const Profile = () => {
   const [pwForm, setPwForm]           = useState({ current: '', newPw: '', confirm: '' });
   const [pwMessage, setPwMessage]     = useState(null);
 
+  // Profile Edit State
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    name: currentUser.name || '',
+    username: currentUser.username || '',
+    phone: currentUser.phone || '',
+  });
+  const [profileMessage, setProfileMessage] = useState(null);
+
   // Preferences state
   const [prefs, setPrefs] = useState({
     notifications: true,
@@ -68,6 +80,28 @@ const Profile = () => {
     emailAlerts: false,
     autoLogout: true,
   });
+
+  const handleProfileSave = async () => {
+    try {
+      await authService.updateProfile({
+        fullName: profileForm.name,
+        userName: profileForm.username,
+        phoneNumber: profileForm.phone,
+      });
+      dispatch(updateUserData({
+        name: profileForm.name,
+        username: profileForm.username,
+        phone: profileForm.phone,
+      }));
+      setProfileMessage({ type: 'success', text: 'Profile updated successfully.' });
+      setIsEditingProfile(false);
+      setTimeout(() => setProfileMessage(null), 3000);
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'Failed to update profile.';
+      setProfileMessage({ type: 'error', text: msg });
+      setTimeout(() => setProfileMessage(null), 3000);
+    }
+  };
 
   const handlePwSave = async (e) => {
     e.preventDefault();
@@ -147,25 +181,78 @@ const Profile = () => {
       <div className="profile-grid">
         {/* ── Account Info ── */}
         <div className="glass-panel">
-          <div className="profile-section-title">
-            <div className="title-icon"><User size={16} /></div>
-            Account Information
+          <div className="profile-section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div className="title-icon"><User size={16} /></div>
+              Account Information
+            </div>
+            {!isEditingProfile && (
+              <button onClick={() => setIsEditingProfile(true)} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem', gap: '6px' }}>
+                <Edit3 size={14} /> Edit
+              </button>
+            )}
           </div>
 
+          {profileMessage && (
+            <div style={{
+              padding: '10px 14px', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 600,
+              background: profileMessage.type === 'error' ? 'var(--color-danger-dim)' : 'var(--color-success-dim)',
+              color: profileMessage.type === 'error' ? 'var(--color-danger)' : 'var(--color-success)',
+              border: `1px solid ${profileMessage.type === 'error' ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}`,
+              display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px'
+            }}>
+              {profileMessage.type === 'error' ? <AlertTriangle size={14} /> : <CheckCircle size={14} />}
+              {profileMessage.text}
+            </div>
+          )}
+
           {[
-            { icon: <User size={14} />,     label: 'Full Name',     value: displayName },
-            { icon: <Mail size={14} />,     label: 'Email Address', value: currentUser.email || '—' },
-            { icon: <Phone size={14} />,    label: 'Phone',         value: currentUser.phone || '—' },
-            { icon: <MapPin size={14} />,   label: 'Warehouse',     value: currentUser.warehouse || 'All Hubs' },
-            { icon: <Shield size={14} />,   label: 'Role',          value: currentUser.role || 'Operator' },
-            { icon: <Calendar size={14} />, label: 'Joined',        value: formatDate(currentUser.createdAt) },
-            { icon: <Clock size={14} />,    label: 'Last Login',    value: currentUser.lastLogin ? new Date(currentUser.lastLogin).toLocaleString() : '—' },
+            { key: 'name',     icon: <User size={14} />,     label: 'Full Name',     value: displayName,               editable: true },
+            { key: 'username', icon: <User size={14} />,     label: 'Username',      value: currentUser.username,      editable: true },
+            { key: 'email',    icon: <Mail size={14} />,     label: 'Email Address', value: currentUser.email || '—',  editable: false },
+            { key: 'phone',    icon: <Phone size={14} />,    label: 'Phone',         value: currentUser.phone || '—',  editable: true },
+            { key: 'warehouse',icon: <MapPin size={14} />,   label: 'Warehouse',     value: currentUser.warehouse || 'All Hubs', editable: false },
+            { key: 'role',     icon: <Shield size={14} />,   label: 'Role',          value: currentUser.role || 'Operator', editable: false },
+            { key: 'joined',   icon: <Calendar size={14} />, label: 'Joined',        value: formatDate(currentUser.createdAt), editable: false },
+            { key: 'login',    icon: <Clock size={14} />,    label: 'Last Login',    value: currentUser.lastLogin ? new Date(currentUser.lastLogin).toLocaleString() : '—', editable: false },
           ].map((row) => (
-            <div key={row.label} className="profile-info-row">
+            <div key={row.key} className="profile-info-row">
               <span className="profile-info-label">{row.icon}{row.label}</span>
-              <span className="profile-info-value">{row.value}</span>
+              {isEditingProfile && row.editable ? (
+                <input
+                  type="text"
+                  className="form-input"
+                  style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                  value={profileForm[row.key]}
+                  onChange={(e) => setProfileForm(p => ({ ...p, [row.key]: e.target.value }))}
+                />
+              ) : (
+                <span className="profile-info-value">{row.value}</span>
+              )}
             </div>
           ))}
+
+          {isEditingProfile && (
+            <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
+              <button onClick={handleProfileSave} className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
+                <Save size={14} /> Save Changes
+              </button>
+              <button 
+                onClick={() => {
+                  setIsEditingProfile(false);
+                  setProfileForm({
+                    name: currentUser.name || '',
+                    username: currentUser.username || '',
+                    phone: currentUser.phone || '',
+                  });
+                }} 
+                className="btn btn-secondary" 
+                style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
 
         {/* ── Security ── */}
@@ -298,8 +385,8 @@ const Profile = () => {
           className="btn"
           style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--color-danger)', border: '1px solid rgba(239,68,68,0.25)' }}
           onClick={async () => {
-            await authService.logout();  // invalidates server-side token
-            dispatch(logout());          // clears Redux + localStorage
+            await performLogout(dispatch);
+            navigate('/login');
           }}
         >
           Sign Out of IMS Core

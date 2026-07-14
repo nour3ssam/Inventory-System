@@ -57,8 +57,8 @@ const InventoryFilters = () => {
             value={filters.category}
             onChange={(e) => handleFilterChange('category', e.target.value)}
           >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+            {categories.map((cat, idx) => (
+              <option key={`cat-${idx}`} value={cat || ''}>{cat || 'Unknown'}</option>
             ))}
           </select>
         </div>
@@ -71,8 +71,8 @@ const InventoryFilters = () => {
             value={filters.supplier}
             onChange={(e) => handleFilterChange('supplier', e.target.value)}
           >
-            {suppliers.map((sup) => (
-              <option key={sup} value={sup}>{sup}</option>
+            {suppliers.map((sup, idx) => (
+              <option key={`sup-${idx}`} value={sup || ''}>{sup || 'Unknown'}</option>
             ))}
           </select>
         </div>
@@ -85,8 +85,8 @@ const InventoryFilters = () => {
             value={filters.warehouse}
             onChange={(e) => handleFilterChange('warehouse', e.target.value)}
           >
-            {warehouses.map((wh) => (
-              <option key={wh} value={wh}>{wh}</option>
+            {warehouses.map((wh, idx) => (
+              <option key={`wh-${idx}`} value={wh || ''}>{wh || 'Unknown'}</option>
             ))}
           </select>
         </div>
@@ -99,8 +99,8 @@ const InventoryFilters = () => {
             value={filters.status}
             onChange={(e) => handleFilterChange('status', e.target.value)}
           >
-            {statuses.map((status) => (
-              <option key={status} value={status}>{status}</option>
+            {statuses.map((status, idx) => (
+              <option key={`status-${idx}`} value={status || ''}>{status || 'Unknown'}</option>
             ))}
           </select>
         </div>
@@ -117,14 +117,14 @@ const InventoryFilters = () => {
           <span>Reset Filters</span>
         </button>
 
-        <button 
+        {/* <button 
           className="btn btn-primary" 
           onClick={handleExport}
           style={{ padding: '10px 16px', gap: '6px', fontSize: '0.88rem' }}
         >
           <Download size={16} />
           <span>Export Ledger</span>
-        </button>
+        </button> */}
       </div>
     </div>
   );

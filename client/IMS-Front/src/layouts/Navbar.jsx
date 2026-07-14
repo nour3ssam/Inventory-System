@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Menu, Boxes, Bell } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUnreadNotifications } from '../store/notificationSlice';
+import { fetchUnreadNotifications, togglePanel } from '../store/notificationSlice';
 
 const Navbar = ({ onMenuClick }) => {
   const dispatch  = useDispatch();
@@ -38,6 +38,7 @@ const Navbar = ({ onMenuClick }) => {
           className="nav-icon-button"
           title={`${unreadCount} unread notification${unreadCount !== 1 ? 's' : ''}`}
           style={{ position: 'relative' }}
+          onClick={() => dispatch(togglePanel())}
         >
           <Bell size={18} />
           {unreadCount > 0 && (

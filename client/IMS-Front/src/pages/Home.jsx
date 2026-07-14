@@ -9,14 +9,10 @@ import
   } from 'lucide-react';
 import { fetchProducts } from '../store/inventorySlice';
 import { fetchNotifications, markAllNotificationsRead } from '../store/notificationSlice';
+import { fetchStockHistory } from '../store/stockHistorySlice';
 import '../styles/pages/Dashboard.css';
 
-/* ─── Mock data — isolated here, no backend change ──────────────────
-   Only used for the Revenue vs. Cost line chart preview.
-   ──────────────────────────────────────────────────────────────────── */
-const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-const REV_DATA = [42000, 58000, 51000, 67000, 73000, 69000, 82000, 78000, 91000, 88000, 95000, 103000];
-const COST_DATA = [28000, 35000, 32000, 41000, 45000, 43000, 51000, 49000, 56000, 53000, 60000, 65000];
+/* ─── Removed mock constants ─────────────────────────────────────────────────── */
 
 /* ─── Formatters ─────────────────────────────────────────────────── */
 const fmtMoney = (n) =>
@@ -129,8 +125,11 @@ const CyberGrid = () =>
 const CW = 780, CH = 230;
 const PAD = { top: 28, right: 24, bottom: 44, left: 68 };
 const IW = CW - PAD.left - PAD.right, IH = CH - PAD.top - PAD.bottom;
-const pX = (i, n) => PAD.left + (i / (n - 1)) * IW;
-const pY = (v, mn, mx) => PAD.top + IH - ((v - mn) / (mx - mn)) * IH;
+const pX = (i, n) => PAD.left + (i / (Math.max(1, n - 1))) * IW;
+const pY = (v, mn, mx) => {
+  if (mx === mn) return PAD.top + IH;
+  return PAD.top + IH - ((v - mn) / (mx - mn)) * IH;
+};
 
 const smooth = (data, mn, mx, area) =>
 {
@@ -145,7 +144,7 @@ const smooth = (data, mn, mx, area) =>
   return d;
 };
 
-const LineChart = () =>
+const LineChart = ({ months, revData, costData }) =>
 {
   const [anim, setAnim] = useState(false);
   const [hover, setHover] = useState(null);
@@ -153,12 +152,17 @@ const LineChart = () =>
 
   useEffect(() => { const t = setTimeout(() => setAnim(true), 300); return () => clearTimeout(t); }, []);
 
-  const all = [...REV_DATA, ...COST_DATA];
-  const mn = Math.min(...all) * 0.84, mx = Math.max(...all) * 1.06;
+  const all = [...revData, ...costData];
+  let mn = Math.min(...all) * 0.84;
+  let mx = Math.max(...all) * 1.06;
+  if (mn === mx) {
+    mn = 0;
+    mx = mx > 0 ? mx * 1.5 : 1000;
+  }
   const grid = Array.from({ length: 5 }, (_, i) => mn + ((mx - mn) * i) / 4);
 
   const tipX = hover !== null
-    ? Math.min(Math.max(pX(hover, MONTHS.length) - 70, PAD.left), CW - PAD.right - 144)
+    ? Math.min(Math.max(pX(hover, months.length) - 70, PAD.left), CW - PAD.right - 144)
     : 0;
 
   const onMove = useCallback((e) =>
@@ -166,8 +170,8 @@ const LineChart = () =>
     if (!svgRef.current) return;
     const r = svgRef.current.getBoundingClientRect();
     const sx = (e.clientX - r.left) * (CW / r.width) - PAD.left;
-    setHover(Math.max(0, Math.min(MONTHS.length - 1, Math.round(sx / (IW / (MONTHS.length - 1))))));
-  }, []);
+    setHover(Math.max(0, Math.min(months.length - 1, Math.round(sx / (IW / (Math.max(1, months.length - 1)))))));
+  }, [months.length]);
 
   return (
     <div className="lc-outer">
@@ -209,32 +213,32 @@ const LineChart = () =>
               fontFamily="'Share Tech Mono',monospace">{fmtMoney(v)}</text>
           </g>;
         })}
-        {MONTHS.map((m, i) => (
-          <text key={m} x={pX(i, MONTHS.length)} y={CH - 10} textAnchor="middle"
+        {months.map((m, i) => (
+          <text key={m} x={pX(i, months.length)} y={CH - 10} textAnchor="middle"
             fontSize="9" fill="rgba(255,255,255,0.22)"
             fontFamily="'Share Tech Mono',monospace">{m}</text>
         ))}
 
         {/* hover column */}
         {hover !== null && <rect
-          x={pX(hover, MONTHS.length) - IW / (MONTHS.length - 1) / 2} y={PAD.top}
-          width={IW / (MONTHS.length - 1)} height={IH}
+          x={pX(hover, months.length) - IW / (Math.max(1, months.length - 1)) / 2} y={PAD.top}
+          width={IW / (Math.max(1, months.length - 1))} height={IH}
           fill="rgba(255,107,0,0.03)" />}
 
         {/* areas */}
         <g clipPath="url(#db-clip)">
-          <path d={smooth(COST_DATA, mn, mx, true)} fill="url(#db-cost-g)" />
-          <path d={smooth(REV_DATA, mn, mx, true)} fill="url(#db-rev-g)" />
+          <path d={smooth(costData, mn, mx, true)} fill="url(#db-cost-g)" />
+          <path d={smooth(revData, mn, mx, true)} fill="url(#db-rev-g)" />
         </g>
 
         {/* lines */}
-        <path d={smooth(COST_DATA, mn, mx, false)} fill="none" stroke="#2F80FF" strokeWidth="2"
+        <path d={smooth(costData, mn, mx, false)} fill="none" stroke="#2F80FF" strokeWidth="2"
           pathLength="1" filter="url(#db-glow-b)"
           style={{
             strokeDasharray: 1, strokeDashoffset: anim ? 0 : 1,
             transition: 'stroke-dashoffset 2s cubic-bezier(.4,0,.2,1)'
           }} />
-        <path d={smooth(REV_DATA, mn, mx, false)} fill="none" stroke="#FF6B00" strokeWidth="2.5"
+        <path d={smooth(revData, mn, mx, false)} fill="none" stroke="#FF6B00" strokeWidth="2.5"
           pathLength="1" filter="url(#db-glow-r)"
           style={{
             strokeDasharray: 1, strokeDashoffset: anim ? 0 : 1,
@@ -244,9 +248,9 @@ const LineChart = () =>
         {/* hover overlays */}
         {hover !== null && (() =>
         {
-          const rx = pX(hover, MONTHS.length);
-          const ry = pY(REV_DATA[hover], mn, mx);
-          const cy = pY(COST_DATA[hover], mn, mx);
+          const rx = pX(hover, months.length);
+          const ry = pY(revData[hover], mn, mx);
+          const cy = pY(costData[hover], mn, mx);
           return <>
             <line x1={rx} y1={PAD.top} x2={rx} y2={PAD.top + IH}
               stroke="rgba(255,107,0,0.18)" strokeWidth="1" strokeDasharray="3 3" />
@@ -259,16 +263,16 @@ const LineChart = () =>
                 stroke="rgba(255,107,0,0.3)" strokeWidth="1" />
               <rect width="142" height="3" rx="1.5" fill="#FF6B00" opacity=".7" />
               <text x="12" y="22" fontSize="11" fontWeight="800" fill="#fff"
-                fontFamily="'Share Tech Mono',monospace">{MONTHS[hover]}</text>
+                fontFamily="'Share Tech Mono',monospace">{months[hover]}</text>
               <rect x="12" y="30" width="8" height="2.5" rx="1" fill="#FF6B00" />
               <text x="26" y="40" fontSize="10" fill="#FF6B00"
                 fontFamily="'Share Tech Mono',monospace" fontWeight="700">
-                {fmtMoney(REV_DATA[hover])}
+                {fmtMoney(revData[hover])}
               </text>
               <rect x="12" y="50" width="8" height="2.5" rx="1" fill="#2F80FF" />
               <text x="26" y="60" fontSize="10" fill="#2F80FF"
                 fontFamily="'Share Tech Mono',monospace" fontWeight="700">
-                {fmtMoney(COST_DATA[hover])}
+                {fmtMoney(costData[hover])}
               </text>
             </g>
           </>;
@@ -494,12 +498,41 @@ export default function Home()
   const dispatch = useDispatch();
   const { items: products, loading: pLoad } = useSelector(s => s.inventory);
   const { items: notifs, unreadCount, loading: nLoad } = useSelector(s => s.notifications);
+  const { items: stockHistory, loading: hLoad } = useSelector(s => s.stockHistory);
 
   useEffect(() =>
   {
     dispatch(fetchProducts());
     dispatch(fetchNotifications({ pageSize: 100 }));
+    dispatch(fetchStockHistory({ pageSize: 2000 }));
   }, [dispatch]);
+
+  // Aggregate line chart data
+  const chartData = useMemo(() => {
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const revData = new Array(12).fill(0);
+    const costData = new Array(12).fill(0);
+
+    const currentYear = new Date().getFullYear();
+
+    stockHistory.forEach((tx) => {
+      if (!tx.createdAt) return;
+      const txDate = new Date(tx.createdAt);
+      if (txDate.getFullYear() === currentYear) {
+        const monthIndex = txDate.getMonth();
+        const product = products.find(p => p.id === tx.productId);
+        if (product) {
+          if (tx.type === 1) { // OUT -> Revenue
+            revData[monthIndex] += (tx.quantity * (product.sellingPrice || 0));
+          } else if (tx.type === 0) { // IN -> Cost
+            costData[monthIndex] += (tx.quantity * (product.costPrice || 0));
+          }
+        }
+      }
+    });
+
+    return { months, revData, costData };
+  }, [stockHistory, products]);
 
   const kpis = useMemo(() =>
   {
@@ -560,7 +593,11 @@ export default function Home()
           <div className="db-charts-row" role="region" aria-label="Performance charts">
             {/* Line chart */}
             <div className="db-glass db-chart-lg">
-              <LineChart />
+              <LineChart 
+                months={chartData.months} 
+                revData={chartData.revData} 
+                costData={chartData.costData} 
+              />
             </div>
             {/* Donut chart */}
             <div className="db-glass db-chart-sm">

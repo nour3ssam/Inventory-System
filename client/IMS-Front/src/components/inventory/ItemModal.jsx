@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, updateProduct } from '../../store/inventorySlice';
+import { fetchCategories } from '../../store/categorySlice';
 import GlassModal from '../ui/GlassModal';
 
 const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
   const dispatch = useDispatch();
+  const categories = useSelector((state) => state.categories.items);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   // Local Form State variables
   const [formData, setFormData] = useState({
@@ -12,9 +18,7 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
     sku: '',
     barcode: '',
     description: '',
-    category: 'Electronics',
-    supplier: 'Apex Tech',
-    warehouse: 'North Hub',
+    categoryId: '',
     quantity: 0,
     unitPrice: 0.0,
     costPrice: 0.0,
@@ -34,9 +38,7 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
         sku: itemToEdit.sku,
         barcode: itemToEdit.barcode || '',
         description: itemToEdit.description || '',
-        category: itemToEdit.category,
-        supplier: itemToEdit.supplier,
-        warehouse: itemToEdit.warehouse,
+        categoryId: itemToEdit.categoryId || '',
         quantity: itemToEdit.quantity,
         unitPrice: itemToEdit.unitPrice,
         costPrice: itemToEdit.costPrice || 0,
@@ -50,9 +52,7 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
         sku: '',
         barcode: '',
         description: '',
-        category: 'Electronics',
-        supplier: 'Apex Tech',
-        warehouse: 'North Hub',
+        categoryId: '',
         quantity: 0,
         unitPrice: 0.0,
         costPrice: 0.0,
@@ -82,6 +82,7 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
     const errors = {};
     if (!formData.name.trim()) errors.name = 'Product name is required';
     if (!formData.sku.trim()) errors.sku = 'SKU identifier code is required';
+    if (!formData.categoryId) errors.categoryId = 'Category is required';
     if (formData.quantity < 0) errors.quantity = 'Quantity cannot be negative';
     if (formData.unitPrice < 0) errors.unitPrice = 'Selling price cannot be negative';
     if (formData.costPrice < 0) errors.costPrice = 'Cost price cannot be negative';
@@ -109,20 +110,20 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
   const isEditMode = !!itemToEdit;
 
   return (
-    <GlassModal 
-      isOpen={isOpen} 
-      onClose={onClose} 
+    <GlassModal
+      isOpen={isOpen}
+      onClose={onClose}
       title={isEditMode ? 'Modify Product Record' : 'Register New Inventory Item'}
     >
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        
+
         {/* Name and SKU */}
         <div className="modal-form-grid">
           <div className="form-group">
             <label className="form-label">Product Name *</label>
-            <input 
-              type="text" 
-              className="form-input" 
+            <input
+              type="text"
+              className="form-input"
               placeholder="e.g. Laser Diode Array"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
@@ -134,9 +135,9 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
 
           <div className="form-group">
             <label className="form-label">SKU Identifier *</label>
-            <input 
-              type="text" 
-              className="form-input" 
+            <input
+              type="text"
+              className="form-input"
               placeholder="e.g. SKU-1234"
               value={formData.sku}
               onChange={(e) => handleInputChange('sku', e.target.value)}
@@ -150,9 +151,9 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
 
           <div className="form-group">
             <label className="form-label">Barcode (Optional)</label>
-            <input 
-              type="text" 
-              className="form-input" 
+            <input
+              type="text"
+              className="form-input"
               placeholder="e.g. 123456789012"
               value={formData.barcode}
               onChange={(e) => handleInputChange('barcode', e.target.value)}
@@ -165,7 +166,7 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
           <div className="form-group" style={{ gridColumn: 'span 2' }}>
             <label className="form-label">Description</label>
             <textarea
-              className="form-input" 
+              className="form-input"
               placeholder="Product details..."
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
@@ -174,49 +175,23 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
           </div>
         </div>
 
-        {/* Category, Supplier, and Warehouse */}
-        <div className="modal-form-grid">
-          <div className="form-group">
-            <label className="form-label">Category Class</label>
-            <select 
-              className="filter-select"
-              value={formData.category}
-              onChange={(e) => handleInputChange('category', e.target.value)}
-            >
-              <option value="Electronics">Electronics</option>
-              <option value="Chemicals">Chemicals</option>
-              <option value="Hardware">Hardware</option>
-              <option value="Logistics">Logistics</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Supplier Partner</label>
-            <select 
-              className="filter-select"
-              value={formData.supplier}
-              onChange={(e) => handleInputChange('supplier', e.target.value)}
-            >
-              <option value="Apex Tech">Apex Tech</option>
-              <option value="Quantum Indus">Quantum Indus</option>
-              <option value="Titan Alloys">Titan Alloys</option>
-              <option value="Global Logistics">Global Logistics</option>
-            </select>
-          </div>
-        </div>
-
+        {/* Category */}
         <div className="modal-form-grid">
           <div className="form-group" style={{ gridColumn: 'span 2' }}>
-            <label className="form-label">Warehouse Depot</label>
-            <select 
+            <label className="form-label">Category Class</label>
+            <select
               className="filter-select"
-              value={formData.warehouse}
-              onChange={(e) => handleInputChange('warehouse', e.target.value)}
+              value={formData.categoryId}
+              onChange={(e) => handleInputChange('categoryId', e.target.value)}
             >
-              <option value="North Hub">North Hub</option>
-              <option value="South Wing">South Wing</option>
-              <option value="East Depot">East Depot</option>
+              <option value="">Select a Category</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
             </select>
+            {formErrors.categoryId && (
+              <span style={{ color: 'var(--color-danger)', fontSize: '0.75rem' }}>{formErrors.categoryId}</span>
+            )}
           </div>
         </div>
 
@@ -224,10 +199,10 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
         <div className="modal-form-grid">
           <div className="form-group">
             <label className="form-label">Starting Units (Qty) *</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               min="0"
-              className="form-input" 
+              className="form-input"
               placeholder="e.g. 50"
               value={formData.quantity}
               onChange={(e) => handleInputChange('quantity', parseInt(e.target.value) || 0)}
@@ -239,11 +214,11 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
 
           <div className="form-group">
             <label className="form-label">Unit Net Price ($) *</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               min="0"
               step="0.01"
-              className="form-input" 
+              className="form-input"
               placeholder="e.g. 19.99"
               value={formData.unitPrice}
               onChange={(e) => handleInputChange('unitPrice', parseFloat(e.target.value) || 0.0)}
@@ -255,11 +230,11 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
 
           <div className="form-group">
             <label className="form-label">Cost Price ($) *</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               min="0"
               step="0.01"
-              className="form-input" 
+              className="form-input"
               placeholder="e.g. 10.00"
               value={formData.costPrice}
               onChange={(e) => handleInputChange('costPrice', parseFloat(e.target.value) || 0.0)}
@@ -274,10 +249,10 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
         <div className="modal-form-grid">
           <div className="form-group">
             <label className="form-label">Reorder Level</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               min="0"
-              className="form-input" 
+              className="form-input"
               placeholder="e.g. 20"
               value={formData.reorderLevel}
               onChange={(e) => handleInputChange('reorderLevel', parseInt(e.target.value) || 0)}
@@ -289,10 +264,10 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
 
           <div className="form-group">
             <label className="form-label">Min Stock Level</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               min="0"
-              className="form-input" 
+              className="form-input"
               placeholder="e.g. 10"
               value={formData.minStockLevel}
               onChange={(e) => handleInputChange('minStockLevel', parseInt(e.target.value) || 0)}
@@ -304,9 +279,9 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
 
           <div className="form-group" style={{ gridColumn: 'span 2' }}>
             <label className="form-label">Unit of Measurement</label>
-            <input 
-              type="text" 
-              className="form-input" 
+            <input
+              type="text"
+              className="form-input"
               placeholder="e.g. pcs, kg, box"
               value={formData.unit}
               onChange={(e) => handleInputChange('unit', e.target.value)}
@@ -316,15 +291,15 @@ const ItemModal = ({ isOpen, onClose, itemToEdit }) => {
 
         {/* Submit Actions */}
         <div className="filters-actions" style={{ marginBottom: '0', marginTop: '12px' }}>
-          <button 
-            type="button" 
-            className="btn btn-secondary" 
+          <button
+            type="button"
+            className="btn btn-secondary"
             onClick={onClose}
           >
             Cancel
           </button>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn btn-primary"
           >
             {isEditMode ? 'Apply Updates' : 'Confirm Registration'}

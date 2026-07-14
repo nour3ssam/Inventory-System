@@ -1,22 +1,15 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../store/authSlice';
+import { performLogout } from '../utils/session';
 import {
   Boxes,
   LayoutDashboard,
   Package,
   FolderTree,
   Truck,
-  ClipboardList,
-  ShoppingCart,
-  Warehouse,
-  ArrowLeftRight,
-  BarChart3,
-  Users,
-  Settings,
+  Database,
   LogOut,
   X,
-  User,
 } from 'lucide-react';
 import "../styles/layouts/Sidebar.css";
 
@@ -25,8 +18,9 @@ const navItems = [
   { name: 'Inventory', path: '/inventory', icon: Package },
   { name: 'Categories', path: '/categories', icon: FolderTree },
   { name: 'Suppliers', path: '/suppliers', icon: Truck },
-  { name: 'Transfers', path: '/transfers', icon: ArrowLeftRight },
-  { name: 'Analytics', path: '/analytics', icon: BarChart3 },
+  { name: 'Stock History', path: '/stock-history', icon: Database },
+  // { name: 'Analytics', path: '/analytics', icon: BarChart3 },
+
   // { name: 'Reports', path: '/reports', icon: BarChart3 },
   // { name: 'Users', path: '/users', icon: Users },
   // { name: 'Settings', path: '/settings', icon: Settings },
@@ -34,12 +28,14 @@ const navItems = [
 
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await performLogout(dispatch);
     if (onClose) onClose();
+    navigate('/login');
   };
 
   return (

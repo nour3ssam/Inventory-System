@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginStart, loginSuccess, loginFailure } from '../store/authSlice';
 import authService from '../services/authService';
+import { prepareNewSession } from '../utils/session';
 import '../styles/pages/Login.css';
 
 /* ── icons (inline SVG, no dependency) ─────────────────────────────── */
@@ -82,6 +83,33 @@ function Field({ id, label, type, icon, value, onChange, placeholder, autoComple
   );
 }
 
+/* ── error extraction helper ────────────────────────────────────────── */
+const extractErrors = (err, fallbackMsg) => {
+  const data = err?.response?.data;
+  if (!data) return [fallbackMsg];
+  
+  if (Array.isArray(data)) {
+    if (data[0] && data[0].description) return data.map(e => e.description);
+    if (typeof data[0] === 'string') return data;
+  }
+
+  if (data.errors) {
+    if (Array.isArray(data.errors)) {
+      return data.errors.map(e => typeof e === 'object' ? (e.description || e.message) : e);
+    } else if (typeof data.errors === 'object') {
+      const msgs = [];
+      Object.values(data.errors).forEach(val => {
+        if (Array.isArray(val)) msgs.push(...val);
+        else if (typeof val === 'string') msgs.push(val);
+      });
+      if (msgs.length > 0) return msgs;
+    }
+  }
+  
+  if (data.message) return [data.message];
+  return [fallbackMsg];
+};
+
 /* ── main component ───────────────────────────────────────────────── */
 export default function Login() {
   const dispatch = useDispatch();
@@ -124,12 +152,13 @@ export default function Login() {
     dispatch(loginStart());
     try {
       const data = await authService.login({ email: loginEmail, password: loginPassword });
-      // authService.login returns { name, email, token, refreshToken, ... }
+      // Drop previous account's cached inventory/notifications before hydrating new JWT.
+      prepareNewSession(dispatch);
       dispatch(loginSuccess(data));
       navigate('/');
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Invalid credentials. Please try again.';
-      dispatch(loginFailure(msg));
+      const msgs = extractErrors(err, 'Invalid credentials. Please try again.');
+      dispatch(loginFailure(msgs));
     }
   };
 
@@ -157,12 +186,13 @@ export default function Login() {
         password:        signupPassword,
         confirmPassword: signupConfirm,
       });
-      // authService.register returns normalized { name, email, token, refreshToken, ... }
+      // Drop previous account's cached data so the new user starts clean.
+      prepareNewSession(dispatch);
       dispatch(loginSuccess(data));
       navigate('/');
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Registration failed. Please try again.';
-      dispatch(loginFailure(msg));
+      const msgs = extractErrors(err, 'Registration failed. Please try again.');
+      dispatch(loginFailure(msgs));
     }
   };
 
@@ -215,13 +245,21 @@ export default function Login() {
 
         {/* Global error banner */}
         {(reduxError || localError) && (
-          <div className="lp-error-banner" role="alert">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="lp-error-banner" role="alert" style={{ alignItems: Array.isArray(reduxError) && reduxError.length > 1 ? 'flex-start' : 'center' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: Array.isArray(reduxError) && reduxError.length > 1 ? '4px' : '0' }}>
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="8" x2="12" y2="12" />
               <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
-            {reduxError || localError}
+            <div className="lp-error-content" style={{ display: 'flex', flexDirection: 'column' }}>
+              {Array.isArray(reduxError) ? (
+                <ul style={{ margin: 0, paddingLeft: reduxError.length > 1 ? '1.2rem' : '0', listStyleType: reduxError.length > 1 ? 'disc' : 'none', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {reduxError.map((err, i) => <li key={i}>{err}</li>)}
+                </ul>
+              ) : (
+                <span>{reduxError || localError}</span>
+              )}
+            </div>
           </div>
         )}
 

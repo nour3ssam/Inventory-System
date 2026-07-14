@@ -51,9 +51,12 @@ const notificationSlice = createSlice({
     unreadCount: 0,
     loading:     false,
     error:       null,
+    isPanelOpen: false,
   },
   reducers: {
     clearError: (state) => { state.error = null; },
+    togglePanel: (state) => { state.isPanelOpen = !state.isPanelOpen; },
+    closePanel: (state) => { state.isPanelOpen = false; },
   },
   extraReducers: (builder) => {
     const pending  = (state) => { state.loading = true; state.error = null; };
@@ -100,5 +103,5 @@ const notificationSlice = createSlice({
   },
 });
 
-export const { clearError } = notificationSlice.actions;
+export const { clearError, togglePanel, closePanel } = notificationSlice.actions;
 export default notificationSlice.reducer;

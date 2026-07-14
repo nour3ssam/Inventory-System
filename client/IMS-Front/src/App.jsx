@@ -7,6 +7,7 @@ import CinematicIntro from './components/ui/CinematicIntro';
 import Navbar from './layouts/Navbar';
 import Sidebar from './layouts/Sidebar';
 import BackgroundCanvas from './components/ui/BackgroundCanvas';
+import NotificationPanel from './components/ui/NotificationPanel';
 
 import NotFound from "./pages/NotFound";
 import Home from './pages/Home';
@@ -14,17 +15,10 @@ import Login from './pages/Login';
 import Inventory from "./pages/Inventory";
 import Categories from "./pages/Categories";
 import Suppliers from "./pages/Suppliers";
-// import PurchaseOrders from "./pages/PurchaseOrders";
-// import SalesOrders from "./pages/SalesOrders";
-// import Warehouses from "./pages/Warehouses";
-import Transfers from "./pages/Transfers";
-// import Reports from "./pages/Reports";
-// import Users from "./pages/Users";
-// import Settings from "./pages/Settings";
-// import Finance from "./pages/Finance";
-// import Pos from "./pages/Pos";
+import StockHistory from "./pages/StockHistory";
 import Profile from "./pages/Profile";
 import Analytics from "./pages/Analytics";
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
   const location = useLocation();
@@ -64,6 +58,8 @@ function App() {
         />
       )}
 
+      {showLayout && <NotificationPanel />}
+
       <div className={showLayout ? "main-content" : "auth-content"}>
         {showLayout && (
           <Navbar
@@ -73,23 +69,15 @@ function App() {
         <main className="page-body">
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path='/' element={<Home />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/suppliers" element={<Suppliers />} />
-            <Route path="/transfers" element={<Transfers />} />
-            <Route path="/analytics" element={<Analytics />} />
-            {/* Orphaned/Mock Features Commented Out:
-            <Route path="/purchase-orders" element={<PurchaseOrders />} />
-            <Route path="/sales-orders" element={<SalesOrders />} />
-            <Route path="/warehouses" element={<Warehouses />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/finance" element={<Finance />} />
-            <Route path="/pos" element={<Pos />} />
-            */}
-            <Route path="/profile" element={<Profile />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/suppliers" element={<Suppliers />} />
+              <Route path="/stock-history" element={<StockHistory />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

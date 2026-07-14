@@ -13,6 +13,12 @@ const normalizeUser = (dto) => ({
   refreshToken: dto.jWTAuth?.refreshToken || '',
 });
 
+const clearLocalAuth = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+};
+
 const authService = {
   /** POST /api/auth/Login  — { email, password } */
   login: async ({ email, password }) => {
@@ -38,17 +44,21 @@ const authService = {
     return normalizeUser(dto);
   },
 
-  /** POST /api/auth/Logout — requires Bearer token (sent by axiosInstance) */
+  /**
+   * POST /api/Auth/Logout — requires Bearer + { accessToken, refreshToken }
+   * Revokes the refresh token server-side, then clears local storage.
+   */
   logout: async () => {
+    const accessToken  = localStorage.getItem('token');
+    const refreshToken = localStorage.getItem('refreshToken');
     try {
-      const refreshToken = localStorage.getItem('refreshToken');
-      await api.post(`${BASE_URL}/Logout`, { refreshToken });
+      if (accessToken && refreshToken) {
+        await api.post('/Auth/Logout', { accessToken, refreshToken });
+      }
     } catch (_) {
-      // silently ignore — clear local storage regardless
+      // Always clear local session even if revoke fails (expired / already revoked)
     }
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
+    clearLocalAuth();
   },
 
   /** POST /api/auth/RefreshToken */
@@ -62,13 +72,13 @@ const authService = {
 
   /** PUT /api/auth/Profile — update own account */
   updateProfile: async (data) => {
-    const res = await api.put(`${BASE_URL}/Profile`, data);
+    const res = await api.put('/Auth/Profile', data);
     return res.data?.data;
   },
 
   /** DELETE /api/auth/Profile — delete own account */
   deleteAccount: async () => {
-    await api.delete(`${BASE_URL}/Profile`);
+    await api.delete('/Auth/Profile');
   },
 
   getCurrentUser: () => {

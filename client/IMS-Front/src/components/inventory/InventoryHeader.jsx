@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, Bell, Sun, Moon, Plus } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { togglePanel } from '../../store/notificationSlice';
 
 const InventoryHeader = ({ 
   onAddClick, 
@@ -9,7 +10,9 @@ const InventoryHeader = ({
   notificationsCount = 2,
   onNotificationsClick
 }) => {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { unreadCount } = useSelector((state) => state.notifications);
 
   return (
     <header className="top-nav">
@@ -36,10 +39,13 @@ const InventoryHeader = ({
         <button 
           className="nav-icon-button" 
           title="Notifications Alert Center"
-          onClick={onNotificationsClick}
+          onClick={() => {
+            if (onNotificationsClick) onNotificationsClick();
+            dispatch(togglePanel());
+          }}
         >
           <Bell size={20} />
-          {notificationsCount > 0 && <span className="nav-notification-badge"></span>}
+          {unreadCount > 0 && <span className="nav-notification-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
         </button>
 
         {/* Dynamic User Profile Indicator */}

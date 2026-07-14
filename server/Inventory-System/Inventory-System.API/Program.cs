@@ -4,6 +4,7 @@ using Inventory_System.Infrastructure.Data;
 using Inventory_System.Infrastructure.Identity;
 using Inventory_System.Service;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 namespace Inventory_System.API
@@ -94,6 +95,7 @@ namespace Inventory_System.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
             app.UseCors("AllowFrontend");
 
             app.UseHttpsRedirection();

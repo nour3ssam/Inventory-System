@@ -51,7 +51,7 @@ namespace Inventory_System.API
             // ✅ Dependency Injections
             builder.Services.AddInfrastructureDependencies(builder.Configuration)
                 .AddCoreDependencies()
-                .AddServiceDependencies();
+                .AddServiceDependencies(builder.Configuration);
 
             var app = builder.Build();
 

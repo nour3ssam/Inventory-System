@@ -68,5 +68,15 @@ namespace Inventory_System.API.Controllers
             var response = await _mediator.Send(command);
             return NewResult(response);
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return NewResult(result);
+        }
+
+
+
     }
 }

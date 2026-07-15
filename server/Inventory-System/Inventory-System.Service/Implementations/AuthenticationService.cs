@@ -22,14 +22,15 @@ namespace Inventory_System.Service.Implementations
         private readonly IRefreshTokenRepo _refreshTokenRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly InventoryDbContext _dbContext;
+        private readonly IEmailService _emailService;
 
-        public AuthenticationService(IConfiguration configuration, IRefreshTokenRepo refreshTokenRepo, UserManager<ApplicationUser> userManager, InventoryDbContext dbContext)
+        public AuthenticationService(IConfiguration configuration, IEmailService emailService, IRefreshTokenRepo refreshTokenRepo, UserManager<ApplicationUser> userManager, InventoryDbContext dbContext)
         {
             this.configuration = configuration;
             _refreshTokenRepository = refreshTokenRepo;
             _userManager = userManager;
-    
             _dbContext = dbContext;
+            _emailService = emailService;
         }
 
 
@@ -236,6 +237,80 @@ namespace Inventory_System.Service.Implementations
             return true;
         }
 
-     
+
+
+        //#region Reset Password
+        //public async Task<bool> SendResetPasswordCodeToEmail(string email)
+        //{
+        //    using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        //    try
+        //    {
+        //        var user = await _userManager.FindByEmailAsync(email);
+        //        if (user == null)
+        //            return false;
+
+        //        // Generate random Code
+        //        Random generate = new Random();
+        //        string randamCode = generate.Next(0, 999999).ToString("D6");
+        //        user.Code = randamCode;
+        //        var result = await _userManager.UpdateAsync(user);
+        //        if (!result.Succeeded)
+        //            return false;
+
+        //        // send code to user email
+        //        string massage = $"Your reset password code is: {randamCode}";
+        //        await _emailService.SendEmail(email, massage, "Reset Password Code");
+
+        //        await transaction.CommitAsync();
+        //        return true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        await transaction.RollbackAsync();
+        //        return false;
+        //    }
+        //}
+
+        //public async Task<bool> ConfirmResetPasswordCode(string email, string code)
+        //{
+        //    // get Code from DB
+        //    var user = await _userManager.FindByEmailAsync(email);
+        //    if (user == null || string.IsNullOrEmpty(user.Code))
+        //        return false;
+
+        //    return user.Code.Equals(code);
+        //}
+
+        //public async Task<bool> ResetPassword(string email, string password)
+        //{
+        //    using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        //    try
+        //    {
+        //        var user = await _userManager.FindByEmailAsync(email);
+
+        //        await _userManager.RemovePasswordAsync(user);
+        //        var result = await _userManager.AddPasswordAsync(user, password);
+
+        //        if (!result.Succeeded)
+        //        {
+        //            await transaction.RollbackAsync();
+        //            return false;
+        //        }
+
+        //        user.Code = null; // Clear the reset password code after use
+        //        await _userManager.UpdateAsync(user);
+
+        //        await transaction.CommitAsync();
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await transaction.RollbackAsync();
+        //        return false;
+        //    }
+        //}
+        //#endregion
+
+
     }
 }

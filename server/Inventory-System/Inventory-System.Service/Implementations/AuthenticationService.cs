@@ -4,6 +4,7 @@ using Inventory_System.Infrastructure.Interfaces;
 using Inventory_System.Service.Abstracts;
 using Inventory_System.Service.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -235,6 +236,18 @@ namespace Inventory_System.Service.Implementations
             await _refreshTokenRepository.UpdateAsync(storedRefreshToken);
 
             return true;
+        }
+
+        public async Task RevokeAllRefreshTokensAsync(string userId)
+        {
+            var tokens = await _dbContext.UserRefreshTokens.Where(x => x.UserId == userId && !x.IsRevoked).ToListAsync();
+
+            foreach (var token in tokens)
+            {
+                token.IsRevoked = true;
+                token.RevokedOn = DateTime.UtcNow;
+            }
+            await _dbContext.SaveChangesAsync();
         }
 
 

@@ -76,6 +76,13 @@ namespace Inventory_System.API.Controllers
             return NewResult(result);
         }
 
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return NewResult(result);
+        }
+
 
 
     }

@@ -1,23 +1,45 @@
-body{
-  background:var(--gray-900);
-  color:var(--gray-100);
+body {
+  background: var(--bg-stage-gradient);
+  color: var(--text-primary);
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-a{
-  text-decoration:none;
-  color:inherit;
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-img{
-  max-width:100%;
-  display:block;
+img {
+  max-width: 100%;
+  display: block;
 }
 
-ul{
-  list-style:none;
+ul {
+  list-style: none;
 }
 
-button{
-  cursor:pointer;
-  border:none;
+button {
+  cursor: pointer;
+  border: none;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.background-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
 }

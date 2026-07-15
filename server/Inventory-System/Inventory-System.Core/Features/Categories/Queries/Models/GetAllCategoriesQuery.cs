@@ -11,6 +11,6 @@ namespace Inventory_System.Core.Features.Categories.Queries.Models
     public class GetAllCategoriesQuery : IRequest<Result<PaginatedResult<CategoryDto>>>
     {
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 5;
+        public int PageSize { get; set; } = 10;
     }
 }

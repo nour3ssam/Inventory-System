@@ -11,6 +11,6 @@ namespace Inventory_System.Core.Features.Products.Queries.Models
     public class GetAllProductsQuery : IRequest<Result<PaginatedResult<ProductDto>>>
     {
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 5;
+        public int PageSize { get; set; } = 10;
     }
 }

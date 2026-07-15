@@ -4,6 +4,7 @@ using Inventory_System.Infrastructure.Data;
 using Inventory_System.Infrastructure.Identity;
 using Inventory_System.Service;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 namespace Inventory_System.API
@@ -47,6 +48,17 @@ namespace Inventory_System.API
                     }
                 });
             });
+            //CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173", "https://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // only if you send cookies/auth headers that need credentials mode
+                });
+            });
 
             // ✅ Dependency Injections
             builder.Services.AddInfrastructureDependencies(builder.Configuration)
@@ -84,9 +96,10 @@ namespace Inventory_System.API
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("AllowFrontend");
+
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();

@@ -1,0 +1,389 @@
+/* ==========================================================================
+   TRANSFERS PAGE — Stock Transfer Tracking & Product History
+   ========================================================================== */
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.transfers-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────────────────── */
+.transfers-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 4px;
+  width: fit-content;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: calc(var(--radius) - 4px);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.tab-btn.active {
+  background: rgba(255, 107, 0, 0.15);
+  color: var(--neon-orange);
+  border: 1px solid rgba(255, 107, 0, 0.25);
+  box-shadow: var(--glow-orange);
+}
+
+.tab-btn:not(.active):hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+/* ── Controls bar ────────────────────────────────────────────────────────── */
+.transfers-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.transfers-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 10px 16px;
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  color: var(--text-pure-white);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  outline: none;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  min-width: 140px;
+}
+
+.filter-select:focus {
+  border-color: var(--neon-blue-data);
+  box-shadow: var(--glow-blue);
+}
+
+.filter-select option {
+  background: var(--bg-secondary);
+  color: var(--text-pure-white);
+}
+
+/* ── Search bar ──────────────────────────────────────────────────────────── */
+.transfers-search-wrap {
+  position: relative;
+  max-width: 360px;
+  width: 100%;
+}
+
+.transfers-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.transfers-search-input {
+  width: 100%;
+  padding: 10px 16px 10px 44px;
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  color: var(--text-pure-white);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  outline: none;
+  transition: var(--transition-smooth);
+  box-sizing: border-box;
+}
+
+.transfers-search-input::placeholder { color: var(--text-muted); }
+.transfers-search-input:focus {
+  border-color: var(--neon-blue-data);
+  box-shadow: var(--glow-blue);
+  background: rgba(11, 30, 58, 0.35);
+}
+
+/* ── Transfer table ──────────────────────────────────────────────────────── */
+.transfers-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+}
+
+.transfers-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.transfers-table thead th {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
+}
+
+.transfers-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.2s;
+}
+
+.transfers-table tbody tr:last-child { border-bottom: none; }
+.transfers-table tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
+
+.transfers-table tbody td {
+  padding: 16px 18px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+/* ── Transfer code chip ──────────────────────────────────────────────────── */
+.transfer-code-chip {
+  font-family: monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: rgba(255, 107, 0, 0.1);
+  color: var(--neon-orange);
+  border: 1px solid rgba(255, 107, 0, 0.2);
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* ── Route arrow ─────────────────────────────────────────────────────────── */
+.transfer-route {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.transfer-route .wh-from { color: var(--text-muted); }
+.transfer-route .arrow-icon { color: var(--neon-orange); flex-shrink: 0; }
+.transfer-route .wh-to { color: var(--text-pure-white); font-weight: 600; }
+
+/* ── Status badges ───────────────────────────────────────────────────────── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-round);
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-completed { background: var(--color-success-dim); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.2); }
+.status-completed::before { background: var(--color-success); box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); }
+
+.status-in-transit { background: rgba(47, 128, 255, 0.12); color: var(--neon-blue-data); border: 1px solid rgba(47, 128, 255, 0.2); }
+.status-in-transit::before { background: var(--neon-blue-data); box-shadow: var(--glow-blue); animation: pulse-dot 1.5s infinite; }
+
+.status-pending { background: rgba(245, 158, 11, 0.12); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.2); }
+.status-pending::before { background: var(--color-warning); box-shadow: var(--color-warning-glow); }
+
+.status-cancelled { background: var(--color-danger-dim); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+.status-cancelled::before { background: var(--color-danger); }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Action row buttons ──────────────────────────────────────────────────── */
+.tr-action-btn {
+  background: none;
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  margin-left: 6px;
+}
+
+.tr-action-btn:hover {
+  background: rgba(255, 107, 0, 0.1);
+  border-color: rgba(255, 107, 0, 0.3);
+  color: var(--neon-orange);
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.transfers-empty {
+  padding: 60px 24px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.transfers-empty svg {
+  opacity: 0.25;
+  margin-bottom: 16px;
+}
+
+/* ── History timeline ────────────────────────────────────────────────────── */
+.history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: 24px;
+}
+
+.history-timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--neon-orange), var(--neon-blue-data), rgba(255,255,255,0.05));
+}
+
+.history-item {
+  position: relative;
+  padding: 0 0 20px 20px;
+}
+
+.history-item:last-child {
+  padding-bottom: 0;
+}
+
+.history-node {
+  position: absolute;
+  left: -24px;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-node.orange { background: var(--neon-orange); box-shadow: var(--glow-orange); }
+.history-node.blue   { background: var(--neon-blue-data); box-shadow: var(--glow-blue); }
+.history-node.green  { background: var(--color-success); box-shadow: var(--color-success-glow); }
+.history-node.red    { background: var(--color-danger); box-shadow: var(--color-danger-glow); }
+
+.history-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  transition: var(--transition-smooth);
+}
+
+.history-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.history-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.history-product-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-pure-white);
+}
+
+.history-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.history-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.history-meta-item strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ── Modal Form ──────────────────────────────────────────────────────────── */
+.transfer-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.transfer-form-grid .full-span {
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 600px) {
+  .transfer-form-grid { grid-template-columns: 1fr; }
+  .transfers-controls { flex-direction: column; align-items: stretch; }
+  .transfers-tabs { width: 100%; justify-content: center; }
+}

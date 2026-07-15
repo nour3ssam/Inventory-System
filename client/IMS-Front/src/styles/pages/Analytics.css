@@ -1,0 +1,440 @@
+/* ==========================================================================
+   Advanced Asymmetrical Bento Box Analytics Dashboard
+   Aesthetic: Cyber-Glassmorphism
+   ========================================================================== */
+
+/* ── Root Layout & Ambient Glows ─────────────────────────────────────── */
+.bento-layout-root {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 120px);
+  background: #07152D;
+  border-radius: 24px;
+  padding: 24px;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.bento-ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bento-ambient-glow.glow-1 {
+  width: 600px;
+  height: 600px;
+  background: #2F80FF;
+  top: -200px;
+  left: -100px;
+}
+
+.bento-ambient-glow.glow-2 {
+  width: 500px;
+  height: 500px;
+  background: #FF6B00;
+  bottom: -200px;
+  right: -100px;
+}
+
+/* ── Asymmetrical Grid Architecture (Bento Box) ─────────────────────── */
+.bento-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  /* 4 Columns, responsive */
+  grid-template-columns: repeat(4, 1fr);
+  /* 4 Rows base height */
+  grid-auto-rows: 140px;
+  gap: 20px;
+}
+
+/* Grid Area Assignments */
+/* Hero Metric: Top-Left, 2 rows, 1 col (Actually make it 2x2 for large square) */
+.panel-hero {
+  grid-column: 1 / 3;
+  grid-row: 1 / 3;
+}
+
+/* Velocity Tracker: Top-Right, 2 rows, 2 cols */
+.panel-velocity {
+  grid-column: 3 / 5;
+  grid-row: 1 / 3;
+}
+
+/* Capacity Rings: Bottom-Left, 2 rows, 1 col */
+.panel-rings {
+  grid-column: 1 / 2;
+  grid-row: 3 / 5;
+}
+
+/* Activity Heatmap: Bottom-Center, 2 rows, 2 cols */
+.panel-heatmap {
+  grid-column: 2 / 4;
+  grid-row: 3 / 5;
+}
+
+/* Live Anomaly Feed: Bottom-Right, 2 rows, 1 col */
+.panel-anomaly {
+  grid-column: 4 / 5;
+  grid-row: 3 / 5;
+}
+
+/* ── Panel Base Glassmorphism ────────────────────────────────────────── */
+.bento-panel {
+  background: rgba(11, 30, 58, 0.20);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bento-panel:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+  opacity: 0.8;
+  margin-bottom: 16px;
+  z-index: 2;
+}
+
+.panel-header.space-between {
+  justify-content: space-between;
+}
+
+.text-primary {
+  color: #FF6B00;
+}
+
+.text-secondary {
+  color: #2F80FF;
+}
+
+.text-muted {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── 1. Hero Metric ──────────────────────────────────────────────────── */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+  margin-top: 10px;
+}
+
+.hero-value {
+  font-size: 3.2rem;
+  font-weight: 800;
+  margin: 0;
+  color: #fff;
+  letter-spacing: -1px;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.hero-trend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: rgba(255, 107, 0, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  align-self: flex-start;
+  border: 1px solid rgba(255, 107, 0, 0.2);
+}
+
+.sparkline-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.spark-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ── 2. Velocity Tracker ─────────────────────────────────────────────── */
+.velocity-legend {
+  display: flex;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.velocity-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.line-dash {
+  width: 14px;
+  height: 2px;
+  background: #fff;
+}
+
+.velocity-svg {
+  width: 100%;
+  height: calc(100% - 30px);
+  display: block;
+  overflow: visible;
+  margin-top: 10px;
+}
+
+/* ── 3. Capacity Rings ───────────────────────────────────────────────── */
+.rings-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 10px;
+}
+
+.rings-svg {
+  width: 160px;
+  height: 160px;
+}
+
+.rings-legend {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ring-leg-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.ring-leg-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── 4. Activity Heatmap ─────────────────────────────────────────────── */
+.heatmap-grid-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.heatmap-grid {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.heat-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.heat-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  transition: transform 0.2s ease;
+}
+
+.heat-cell:hover {
+  transform: scale(1.4);
+  z-index: 10;
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── 5. Live Anomaly Feed ────────────────────────────────────────────── */
+.anomaly-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.anomaly-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.anomaly-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.anomaly-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.anomaly-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.anomaly-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.anomaly-dot.spike {
+  background: #00ff88;
+  box-shadow: 0 0 8px #00ff88;
+}
+
+.anomaly-dot.drop {
+  background: #FF6B00;
+  box-shadow: 0 0 8px #FF6B00;
+}
+
+.anomaly-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.anomaly-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.anomaly-time {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 2px;
+}
+
+.anomaly-footer {
+  margin-top: 14px;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 10px;
+}
+
+.pulse-icon {
+  animation: pulse-op 2s infinite;
+}
+
+@keyframes pulse-op {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ── Responsive Grid Fallbacks ───────────────────────────────────────── */
+@media (max-width: 1400px) {
+  .panel-velocity {
+    grid-column: 1 / 5;
+    grid-row: 3 / 5;
+  }
+
+  .panel-hero {
+    grid-column: 1 / 5;
+    grid-row: 1 / 3;
+  }
+
+  .panel-rings {
+    grid-column: 1 / 3;
+    grid-row: 5 / 7;
+  }
+
+  .panel-heatmap {
+    grid-column: 3 / 5;
+    grid-row: 5 / 7;
+  }
+
+  .panel-anomaly {
+    grid-column: 1 / 5;
+    grid-row: 7 / 9;
+  }
+}
+
+@media (max-width: 900px) {
+  .bento-grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bento-panel {
+    min-height: 280px;
+  }
+}

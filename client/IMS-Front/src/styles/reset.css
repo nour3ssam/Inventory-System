@@ -21,8 +21,4 @@ body{
     min-height:100vh;
     line-height:1.5;
     font-family: system-ui, -apple-system, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-content:center;
 }

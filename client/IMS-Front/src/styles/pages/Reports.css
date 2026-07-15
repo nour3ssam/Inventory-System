@@ -1,0 +1,342 @@
+/* ==========================================================================
+   REPORTS PAGE — Analytics & Business Intelligence Dashboard
+   ========================================================================== */
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.reports-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* ── Section separator ───────────────────────────────────────────────────── */
+.reports-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-pure-white);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.reports-section-title .s-icon {
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(255, 107, 0, 0.1);
+  border: 1px solid rgba(255, 107, 0, 0.2);
+  color: var(--neon-orange);
+  display: flex;
+  align-items: center;
+}
+
+/* ── Chart container ─────────────────────────────────────────────────────── */
+.chart-container {
+  width: 100%;
+  position: relative;
+}
+
+/* ── Bar chart (CSS-only) ────────────────────────────────────────────────── */
+.bar-chart-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 180px;
+  padding: 0 8px;
+}
+
+.bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.bar-col {
+  width: 100%;
+  max-width: 40px;
+  border-radius: 6px 6px 0 0;
+  transition: opacity 0.3s;
+  position: relative;
+  cursor: pointer;
+}
+
+.bar-col::after {
+  content: attr(data-val);
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.bar-col:hover { opacity: 0.8; }
+
+.bar-col.primary { background: linear-gradient(to top, rgba(255, 107, 0, 0.5), var(--neon-orange)); }
+.bar-col.secondary { background: linear-gradient(to top, rgba(47, 128, 255, 0.5), var(--neon-blue-data)); }
+.bar-col.success { background: linear-gradient(to top, rgba(16, 185, 129, 0.5), var(--color-success)); }
+
+.bar-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ── Mini donut gauge ────────────────────────────────────────────────────── */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+.donut-chart {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  flex-shrink: 0;
+}
+
+.donut-svg {
+  transform: rotate(-90deg);
+}
+
+.donut-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.donut-val {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--text-pure-white);
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.donut-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.legend-val {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-pure-white);
+}
+
+/* ── Top-products table ──────────────────────────────────────────────────── */
+.top-products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.top-products-table thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.top-products-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.2s;
+}
+
+.top-products-table tbody tr:last-child { border-bottom: none; }
+.top-products-table tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
+
+.top-products-table tbody td {
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+/* ── Rank badge ──────────────────────────────────────────────────────────── */
+.rank-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.rank-1 { background: linear-gradient(135deg, #FFB800, #FF8C00); color: #fff; box-shadow: 0 0 10px rgba(255, 184, 0, 0.4); }
+.rank-2 { background: rgba(255, 255, 255, 0.12); color: var(--text-pure-white); }
+.rank-3 { background: rgba(205, 127, 50, 0.2); color: #CD7F32; }
+.rank-n { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); }
+
+/* ── Progress bar for stock ratio ────────────────────────────────────────── */
+.progress-bar-wrap {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-round);
+  height: 6px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-round);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-bar-fill.orange { background: linear-gradient(to right, rgba(255, 107, 0, 0.6), var(--neon-orange)); }
+.progress-bar-fill.blue   { background: linear-gradient(to right, rgba(47, 128, 255, 0.6), var(--neon-blue-data)); }
+.progress-bar-fill.green  { background: linear-gradient(to right, rgba(16, 185, 129, 0.6), var(--color-success)); }
+
+/* ── Two-column report grid ──────────────────────────────────────────────── */
+.reports-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .reports-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Export action bar ───────────────────────────────────────────────────── */
+.reports-action-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ── KPI mini cards row ──────────────────────────────────────────────────── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.kpi-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: var(--transition-smooth);
+}
+
+.kpi-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpi-value {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.kpi-value.orange { color: var(--neon-orange); }
+.kpi-value.blue   { color: var(--neon-blue-data); }
+.kpi-value.green  { color: var(--color-success); }
+.kpi-value.red    { color: var(--color-danger); }
+
+.kpi-delta {
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.kpi-delta.up   { color: var(--color-success); }
+.kpi-delta.down { color: var(--color-danger); }
+.kpi-delta.neutral { color: var(--text-muted); }
+
+/* ── Alert items ─────────────────────────────────────────────────────────── */
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.alert-item:last-child { border-bottom: none; }
+
+.alert-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.alert-icon-wrap.red    { background: var(--color-danger-dim); color: var(--color-danger); border: 1px solid rgba(239,68,68,0.2); }
+.alert-icon-wrap.orange { background: rgba(245,158,11,0.12); color: var(--color-warning); border: 1px solid rgba(245,158,11,0.2); }
+.alert-icon-wrap.blue   { background: var(--neon-blue-dim); color: var(--neon-blue-data); border: 1px solid rgba(47,128,255,0.2); }
+
+.alert-text { flex: 1; }
+.alert-title { font-size: 0.88rem; font-weight: 600; color: var(--text-pure-white); }
+.alert-sub   { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; }

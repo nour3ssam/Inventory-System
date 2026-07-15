@@ -1,0 +1,477 @@
+/* ── Page wrapper ── */
+.lp {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  font-family: var(--font-sans);
+}
+
+/* ── Floating glass card ── */
+.lp-card {
+  width: 100%;
+  max-width: 440px;
+  background: rgba(11, 30, 58, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow:
+    0 0 0 1px rgba(255, 107, 0, 0.06),
+    0 24px 80px rgba(0, 0, 0, 0.6),
+    0 4px 16px rgba(0, 0, 0, 0.4);
+  padding: 40px 36px 32px;
+  animation: lp-card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes lp-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Brand header ── */
+.lp-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.lp-brand__icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.lp-brand__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.lp-brand__name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-pure-white);
+  line-height: 1;
+}
+
+.lp-brand__sub {
+  margin: 4px 0 0;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Tab switcher ── */
+.lp-tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius);
+  padding: 4px;
+  margin-bottom: 28px;
+}
+
+.lp-tab {
+  position: relative;
+  z-index: 1;
+  padding: 10px 0;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: calc(var(--radius) - 4px);
+  cursor: pointer;
+  transition: color 0.25s ease;
+  letter-spacing: 0.01em;
+}
+
+.lp-tab--active {
+  color: var(--text-pure-white);
+}
+
+/* Sliding pill indicator */
+.lp-tabs__indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.22), rgba(255, 107, 0, 0.10));
+  border: 1px solid rgba(255, 107, 0, 0.3);
+  border-radius: calc(var(--radius) - 6px);
+  box-shadow: 0 0 16px rgba(255, 107, 0, 0.18);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lp-tabs__indicator--right {
+  transform: translateX(calc(100% + 0px));
+}
+
+/* ── Error banner ── */
+.lp-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  color: #fca5a5;
+  animation: lp-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+.lp-error-banner svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #f87171;
+}
+
+@keyframes lp-shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-6px);
+  }
+
+  40% {
+    transform: translateX(5px);
+  }
+
+  60% {
+    transform: translateX(-4px);
+  }
+
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+/* ── Form ── */
+.lp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: lp-form-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes lp-form-in {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.lp-form__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lp-form__switch {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* ── Field ── */
+.lp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.lp-field__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lp-field__wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lp-field__icon {
+  position: absolute;
+  left: 14px;
+  width: 17px;
+  height: 17px;
+  color: var(--icon-inactive);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.lp-field__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.lp-field__input {
+  width: 100%;
+  padding: 13px 46px 13px 44px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-sm);
+  color: var(--text-pure-white);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.lp-field__input::placeholder {
+  color: rgba(148, 163, 184, 0.45);
+}
+
+.lp-field__input:focus {
+  border-color: var(--neon-orange);
+  background: rgba(255, 107, 0, 0.04);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.12);
+}
+
+.lp-field__input:focus+.lp-field__icon,
+.lp-field__wrap:focus-within .lp-field__icon {
+  color: var(--neon-orange);
+}
+
+.lp-field--error .lp-field__input {
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.10);
+}
+
+.lp-field__error {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #f87171;
+}
+
+.lp-field__toggle {
+  position: absolute;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  color: var(--icon-inactive);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  padding: 0;
+}
+
+.lp-field__toggle:hover {
+  color: var(--text-muted);
+}
+
+.lp-field__toggle svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Checkbox ── */
+.lp-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.lp-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.lp-checkbox__box {
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.lp-checkbox input:checked~.lp-checkbox__box {
+  background: var(--neon-orange);
+  border-color: var(--neon-orange);
+}
+
+.lp-checkbox input:checked~.lp-checkbox__box::after {
+  content: '';
+  display: block;
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+/* ── Inline link button ── */
+.lp-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: inherit;
+  color: var(--neon-orange);
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.lp-link:hover {
+  color: #ffaa60;
+  text-shadow: 0 0 12px rgba(255, 107, 0, 0.5);
+}
+
+/* ── Submit button ── */
+.lp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  margin-top: 6px;
+  background: linear-gradient(135deg, #ff6b00 0%, #e55c00 100%);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition:
+    transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    opacity 0.18s ease;
+  box-shadow:
+    0 4px 18px rgba(255, 107, 0, 0.4),
+    0 0 0 1px rgba(255, 107, 0, 0.3);
+}
+
+.lp-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 28px rgba(255, 107, 0, 0.55),
+    0 0 0 1px rgba(255, 107, 0, 0.4);
+  background: linear-gradient(135deg, #ff7a1a 0%, #ff6b00 100%);
+}
+
+.lp-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.lp-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ── Spinner ── */
+.lp-spinner {
+  width: 18px;
+  height: 18px;
+  animation: lp-spin 0.75s linear infinite;
+}
+
+@keyframes lp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Password strength ── */
+.lp-strength {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: -6px;
+}
+
+.lp-strength__bars {
+  display: flex;
+  gap: 5px;
+  flex: 1;
+}
+
+.lp-strength__bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.35s ease;
+}
+
+.lp-strength__label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  min-width: 42px;
+  text-align: right;
+  text-transform: uppercase;
+  transition: color 0.35s ease;
+}
+
+/* ── Footer ── */
+.lp-footer {
+  margin: 24px 0 0;
+  text-align: center;
+  font-size: 0.72rem;
+  color: rgba(148, 163, 184, 0.38);
+  letter-spacing: 0.04em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .lp-card {
+    padding: 32px 24px 28px;
+    border-radius: var(--radius);
+  }
+}

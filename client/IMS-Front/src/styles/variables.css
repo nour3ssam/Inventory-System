@@ -1,25 +1,88 @@
-:root{
+:root {
+  /* ==========================================================================
+     1. COLOR PALETTE (Theme Colors)
+     ========================================================================== */
+  /* Backgrounds */
+  --bg-deep: #07152D;               /* Deep Navy (Primary Background) */
+  --bg-secondary: #0B1E3A;          /* Midnight Blue (Secondary Background) */
+  --bg-stage-gradient: radial-gradient(circle at center, var(--bg-secondary) 0%, var(--bg-deep) 100%);
 
-  /* colors */
-  --primary:#f8f8f8; 
-  --secondary:#0b0a0a;
-  --accent:#a0a0a0; 
-  /* sorry for hurting your eyes, just till I figure out the 
-  cool color pallete that gives the vibe i need ;) */ 
+  /* Primary Accent: Neon Orange */
+  --neon-orange: #FF6B00;           /* Neon Orange */
+  --neon-orange-hover: #E55F00;     /* Darker Orange for hover */
+  --neon-orange-dim: rgba(255, 107, 0, 0.15); /* Soft orange ambient glow */
+  --neon-orange-glow: 0 0 20px rgba(255, 107, 0, 0.4);
 
-  --white:#fff;
-  --black:#000;
+  /* Secondary Accent: Electric Blue */
+  --neon-blue-data: #2F80FF;        /* Electric Blue */
+  --neon-blue-hover: #1A6EE5;
+  --neon-blue-dim: rgba(47, 128, 255, 0.15);  /* Soft blue ambient glow */
+  --neon-blue-glow: 0 0 20px rgba(47, 128, 255, 0.4);
 
-  --gray-100:#f3f4f6;
-  --gray-500:#6b7280;
-  --gray-900:#111827;
+  /* Semantic Feedback */
+  --color-success: #10B981;         /* Emerald Green */
+  --color-success-dim: rgba(16, 185, 129, 0.15);
+  --color-success-glow: 0 0 15px rgba(16, 185, 129, 0.4);
 
-  /* spacing */
-  --space-sm:8px;
-  --space-md:16px;
-  --space-lg:32px;
+  --color-warning: #F59E0B;         /* Amber */
+  --color-warning-dim: rgba(245, 158, 11, 0.15);
+  --color-warning-glow: 0 0 15px rgba(245, 158, 11, 0.4);
 
-  /* border radius */
-  --radius:8px;
+  --color-danger: #EF4444;          /* Red */
+  --color-danger-dim: rgba(239, 68, 68, 0.15);
+  --color-danger-glow: 0 0 15px rgba(239, 68, 68, 0.4);
 
+  /* Foreground / Typography */
+  --text-pure-white: #F8FAFC;       /* White text */
+  --text-primary: #F8FAFC;          /* Primary text */
+  --text-muted: #94A3B8;            /* Muted gray secondary text */
+  --icon-inactive: #64748B;         /* Inactive icons / darker text */
+  
+  --white: #FFFFFF;
+  --black: #020617;
+
+  /* ==========================================================================
+     2. GLASSMORPHISM & SURFACE DESIGN
+     Frosted glass panels (15-25% transparency), background blur (20-30px)
+     ========================================================================== */
+  --glass-surface: rgba(11, 30, 58, 0.20); /* Midnight Blue with 20% opacity */
+  --glass-surface-hover: rgba(11, 30, 58, 0.30);
+  --glass-border: rgba(255, 255, 255, 0.08); /* Thin glowing border */
+  --glass-border-orange: rgba(255, 107, 0, 0.25);
+  --glass-border-blue: rgba(47, 128, 255, 0.25);
+  --glass-blur: 24px;               /* Frosted glass blur (20-30px) */
+  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); /* Heavy floating shadow */
+
+  /* ==========================================================================
+     3. SPACING & LAYOUT (Minimalistic & Spaced Out)
+     ========================================================================== */
+  --space-xs: 8px;
+  --space-sm: 16px;                 /* Increased spacing for minimalistic design */
+  --space-md: 24px;
+  --space-lg: 40px;
+  --space-xl: 64px;
+
+  /* ==========================================================================
+     4. BORDERS & CORNERS
+     ========================================================================== */
+  --radius-sm: 8px;
+  --radius: 20px;                   /* Main rounded corners (18-24px) */
+  --radius-lg: 24px;                /* Large card/modal corners */
+  --radius-round: 9999px;
+
+  /* ==========================================================================
+     5. TYPOGRAPHY
+     ========================================================================== */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* ==========================================================================
+     6. TRANSITIONS, ANIMATIONS & GLOWS (Futuristic / Cyberpunk)
+     ========================================================================== */
+  --glow-orange: 0 0 15px rgba(255, 107, 0, 0.3);
+  --glow-blue: 0 0 15px rgba(47, 128, 255, 0.3);
+  --glow-orange-strong: 0 0 25px rgba(255, 107, 0, 0.6);
+  --glow-blue-strong: 0 0 25px rgba(47, 128, 255, 0.6);
+  
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }

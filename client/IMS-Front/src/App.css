@@ -1,26 +1,412 @@
-.container {
+/* ==========================================================================
+   1. DASHBOARD WRAPPER & CORE LAYOUT
+   ========================================================================== */
+.app-container {
   display: flex;
-  flex-direction: column-reverse;
-  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  background: transparent;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 120px;
+  /* Space for the floating sidebar (88px + 16px left + 16px gap) */
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-smooth);
+  min-width: 0;
+}
+
+.page-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+}
+
+.auth-content {
+  flex: 1;
+  display: flex;
   align-items: center;
-  width:50vw;
-  height: 50vh;
-  
+  justify-content: center;
+  padding: 32px;
+  min-height: 100vh;
 }
 
-h1{
+/* ==========================================================================
+   2. GLASSMORPHISM & SURFACE PATTERNS
+   ========================================================================== */
+.glass-panel {
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  padding: var(--space-md);
+  transition: var(--transition-smooth);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: var(--space-sm);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Soft ambient reflection highlights */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Interactive Floating Hover States */
+.glass-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Ambient Neon Glow Variations */
+.glow-blue:hover {
+  border-color: var(--glass-border-blue);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), var(--glow-blue);
+}
+
+.glow-orange:hover {
+  border-color: var(--glass-border-orange);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), var(--glow-orange);
+}
+
+/* ==========================================================================
+   3. TYPOGRAPHY & HEADER METRICS
+   ========================================================================== */
+.page-header {
+  margin-bottom: var(--space-md);
+}
+
+.page-title {
   font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--text-pure-white) 30%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-img {
-  width:460px;
-  height: auto;
-  border-radius: var(--radius) ;
-  transform:scale(1);
-  transition:0.5s;
-  margin-bottom:20px;
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-top: 4px;
 }
 
-img:hover{
-  transform: scale(1.1);
+/* ==========================================================================
+   4. LAYOUT GRIDS & FLEX CONTAINERS
+   ========================================================================== */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 12px 0 6px 0;
+  color: var(--text-pure-white);
+  letter-spacing: -1px;
+}
+
+.stat-trend {
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-trend.green {
+  color: var(--color-success);
+}
+
+.stat-trend.blue {
+  color: var(--neon-blue-data);
+}
+
+.stat-trend.orange {
+  color: var(--neon-orange);
+}
+
+/* ==========================================================================
+   5. INTERACTIVE COMPONENTS (Buttons, Forms, Inputs)
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--neon-orange) 0%, #FF8A3D 100%);
+  color: var(--text-pure-white);
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 107, 0, 0.45), var(--glow-orange-strong);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-pure-white);
+  border-color: var(--glass-border);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Glassmorphic Form Inputs */
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(7, 21, 45, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  color: var(--text-pure-white);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition-smooth);
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: var(--neon-blue-data);
+  background: rgba(7, 21, 45, 0.8);
+  box-shadow: 0 0 15px rgba(47, 128, 255, 0.25), var(--glow-blue);
+}
+
+/* Scrollbar styling for pages */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--glass-surface);
+  border: 2px solid var(--bg-deep);
+  border-radius: var(--radius-round);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ==========================================================================
+   6. GLASSMORPHIC MODAL STYLES
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2, 6, 23, 0.7);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-container {
+  background: var(--bg-secondary);
+  background-image: radial-gradient(circle at top right, rgba(47, 128, 255, 0.05), transparent 60%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  width: 90%;
+  max-width: 600px;
+  max-height: calc(100vh - 64px);
+  padding: 32px;
+  position: relative;
+  transform: translateY(20px);
+  animation: slideIn 0.3s forwards cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body {
+  overflow-y: auto;
+  flex: 1;
+  margin-top: 8px;
+}
+
+/* Custom Scrollbar for Modal Body */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-round);
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-orange-dim);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 16px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-pure-white);
+}
+
+.modal-close {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.modal-close:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: var(--color-danger);
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   7. RESPONSIVE MOBILE OVERRIDES (Width <= 768px)
+   ========================================================================== */
+.sidebar-mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2, 6, 23, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 35;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.mobile-navbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: var(--glass-surface);
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .main-content {
+    margin-left: 0 !important;
+    padding: 20px 16px !important;
+  }
+  
+  .page-body {
+    margin-top: 16px;
+  }
+  
+  .page-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
 }
